@@ -14,13 +14,22 @@
 		// three.js 定義されているオブジェクトに関連した変数を宣言
 		let scene;
 		let camera;
-		let controls;
+		// let controls;
 		let renderer;
-		let boxGeometry;
-		let material;
-		let box;
 		let directional;
 		let ambient;
+
+		let bigHandGeometry;
+		let bigHandMaterial;
+		let bigHand;
+
+		let shortHandGeometry;
+		let shortHandMaterial;
+		let shortHand;
+
+		let circleGeometry;
+		let circleMaterial;
+		let circle;
 
 		// 各種パラメータを設定するために定数オブジェクトを定義
 		let CAMERA_PARAMETER = {
@@ -71,9 +80,29 @@
 		renderer.setSize(RENDERER_PARAMETER.width, RENDERER_PARAMETER.height);
 		targetDOM.appendChild(renderer.domElement);
 
-		var circleGeometry = new THREE.CircleGeometry( 2, 32 );
-		var circleMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-		var circle   = new THREE.Mesh( circleGeometry, circleMaterial );
+		bigHandGeometry = new THREE.BoxGeometry(0.1, 4.0, 0.1);
+		bigHandMaterial = new THREE.MeshBasicMaterial( { color: 0x00ffff } );
+		bigHand         = new THREE.Mesh( bigHandGeometry, bigHandMaterial );
+		bigHand.position.x = 0.0;
+		bigHand.position.y = -1.0;
+		bigHand.position.z = 0.1;
+		scene.add( bigHand );
+
+		shortHandGeometry = new THREE.BoxGeometry(0.1, 2.0, 0.1);
+		shortHandMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+		shortHand         = new THREE.Mesh( shortHandGeometry, shortHandMaterial );
+		shortHand.position.x = 0.0;
+		shortHand.position.y = -1.0;
+		shortHand.position.z = 0.0;
+		scene.add( shortHand );
+
+
+		circleGeometry = new THREE.CircleGeometry( 2, 32 );
+		circleMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+		circle         = new THREE.Mesh( circleGeometry, circleMaterial );
+		circle.position.x = 0.0;
+		circle.position.y = 0.0;
+		circle.position.z = -0.1;
 		scene.add( circle );
 
 		/* ライトオブジェクトを生成してシーンに追加する */
@@ -88,20 +117,17 @@
 		render();
 		function render(){
 				count++;
-				let s1 = Math.sin(count * 0.05);
-				let c1 = Math.cos(count * 0.05);
-				let s2 = Math.sin(count * 0.1);
-				let c2 = Math.cos(count * 0.1);
+				let s1 = Math.sin(count * 0.00005);
+				let c1 = Math.cos(count * 0.00005);
+				let c2 = Math.cos(count * 0.005);
 				// let e = Math.exp(Math.cos(count * 0.1));
 
-				// 回転移動
-				// circle.position.x = c1*c2;
-				// circle.position.y = c1*s2;
-				// circle.position.z = s1;
+				bigHand.position.y = 0.0;
+				bigHand.rotation.z += c1;
 
-				// 平行移動
-				// circle.rotation.y += 0.01;
-				// circle.rotation.x += 0.01;
+				shortHand.position.y = 0.0;
+				shortHand.rotation.z += c2;
+
 				/* レンダラにシーンとカメラを渡して描画させる*/
 				renderer.render(scene, camera);
 				if(run){requestAnimationFrame(render);}
