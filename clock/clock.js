@@ -37,8 +37,8 @@
 			aspect: width / height,
 			near: 0.1,
 			far: 10.0,
-			x: 1.0,
-			y: 2.0,
+			x: 0.0,
+			y: 0.0,
 			z: 5.0,
 			lookAt: new THREE.Vector3(0.0, 0.0, 0.0)
 		};
@@ -80,22 +80,47 @@
 		renderer.setSize(RENDERER_PARAMETER.width, RENDERER_PARAMETER.height);
 		targetDOM.appendChild(renderer.domElement);
 
-		bigHandGeometry = new THREE.BoxGeometry(0.1, 4.0, 0.1);
+
+		// 現時刻を取得
+		var current_time = new Date();
+		var hour         = current_time.getHours();
+		var minute       = current_time.getMinutes();
+		var second       = current_time.getSeconds();
+		// console.log(hour+"h",+minute+"m"+second+"s");
+
+		// 時刻角度計算
+		var hourArg   = (hour%12)*(Math.PI/6);
+		var minuteArg = minute *(Math.PI/30);
+		var secondArg = second *(Math.PI/30);
+		console.log(hourArg);
+
+		shortHandGeometry = new THREE.BoxGeometry(0.13, 1.0, 0.1);
+		shortHandMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+		shortHand         = new THREE.Mesh( shortHandGeometry, shortHandMaterial );
+		shortHand.position.set(0.0, 0.0, 0.0);
+		// 針は、時計回りなので、角度を逆にする.
+		shortHand.rotation.set(0,0,-hourArg);
+		scene.add( shortHand );
+
+		bigHandGeometry = new THREE.BoxGeometry(0.1, 2.0, 0.1);
 		bigHandMaterial = new THREE.MeshBasicMaterial( { color: 0x00ffff } );
 		bigHand         = new THREE.Mesh( bigHandGeometry, bigHandMaterial );
 		bigHand.position.x = 0.0;
-		bigHand.position.y = -1.0;
-		bigHand.position.z = 0.1;
+		bigHand.position.y = 0.0;
+		bigHand.position.z = 0.0;
+		// 針は、時計回りなので、角度を逆にする.
+		bigHand.rotation.set(0,0,-minuteArg);
 		scene.add( bigHand );
 
-		shortHandGeometry = new THREE.BoxGeometry(0.1, 2.0, 0.1);
-		shortHandMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
-		shortHand         = new THREE.Mesh( shortHandGeometry, shortHandMaterial );
-		shortHand.position.x = 0.0;
-		shortHand.position.y = -1.0;
-		shortHand.position.z = 0.0;
-		scene.add( shortHand );
-
+		secondHandGeometry = new THREE.BoxGeometry(0.1, 3.0, 0.1);
+		secondHandMaterial = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+		secondHand         = new THREE.Mesh( secondHandGeometry, secondHandMaterial );
+		secondHand.position.x = 0.0;
+		secondHand.position.y = 0.0;
+		secondHand.position.z = 0.0;
+		// 針は、時計回りなので、角度を逆にする.
+		secondHand.rotation.set(0,0,-secondArg);
+		scene.add( secondHand );
 
 		circleGeometry = new THREE.CircleGeometry( 2, 32 );
 		circleMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
@@ -116,21 +141,25 @@
 		let count = 0;
 		render();
 		function render(){
-				count++;
-				let s1 = Math.sin(count * 0.00005);
-				let c1 = Math.cos(count * 0.00005);
-				let c2 = Math.cos(count * 0.005);
-				// let e = Math.exp(Math.cos(count * 0.1));
 
-				bigHand.position.y = 0.0;
-				bigHand.rotation.z += c1;
+			current_time = new Date();
+			hour         = current_time.getHours();
+			minute       = current_time.getMinutes();
+			second       = current_time.getSeconds();
+			// console.log(hour+"h",+minute+"m"+second+"s");
 
-				shortHand.position.y = 0.0;
-				shortHand.rotation.z += c2;
+			// 時刻角度計算
+			hourArg   = (hour%12)*(Math.PI/6);
+			minuteArg = minute *(Math.PI/30);
+			secondArg = second *(Math.PI/30);
 
-				/* レンダラにシーンとカメラを渡して描画させる*/
-				renderer.render(scene, camera);
-				if(run){requestAnimationFrame(render);}
+			shortHand.rotation.set(0,0,-hourArg);
+			bigHand.rotation.set(0,0,-minuteArg);
+			secondHand.rotation.set(0,0,-secondArg);
+
+			/* レンダラにシーンとカメラを渡して描画させる*/
+			renderer.render(scene, camera);
+			if(run){requestAnimationFrame(render);}
 		}
 		renderer.render(scene, camera);
 	}, false);
