@@ -54,6 +54,14 @@
 				specular: 0xffffff
 		};
 
+		// Quaternion
+		var Axis = {
+			"x" : new THREE.Vector3(1, 0, 0).normalize(),
+			"y" : new THREE.Vector3(0, 1, 0).normalize(),
+			"z" : new THREE.Vector3(0, 0, 1).normalize()
+		};
+		var q = new THREE.Quaternion();
+
 		/*
 		THREE.jsの実装のテンプレート
 		*/
@@ -80,7 +88,6 @@
 		renderer.setSize(RENDERER_PARAMETER.width, RENDERER_PARAMETER.height);
 		targetDOM.appendChild(renderer.domElement);
 
-
 		// 現時刻を取得
 		var current_time = new Date();
 		var hour         = current_time.getHours();
@@ -98,6 +105,7 @@
 		shortHandMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
 		shortHand         = new THREE.Mesh( shortHandGeometry, shortHandMaterial );
 		shortHand.position.set(0.0, 0.0, 0.0);
+
 		// 針は、時計回りなので、角度を逆にする.
 		shortHand.rotation.set(0,0,-hourArg);
 		scene.add( shortHand );
@@ -112,14 +120,18 @@
 		bigHand.rotation.set(0,0,-minuteArg);
 		scene.add( bigHand );
 
-		secondHandGeometry = new THREE.BoxGeometry(0.1, 3.0, 0.1);
+		secondHandGeometry = new THREE.BoxGeometry(0.1, 2.0, 0.1);
 		secondHandMaterial = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
 		secondHand         = new THREE.Mesh( secondHandGeometry, secondHandMaterial );
-		secondHand.position.x = 0.0;
-		secondHand.position.y = 0.0;
-		secondHand.position.z = 0.0;
+
+		// console.log(secondHand);
+
+		q.setFromAxisAngle(Axis["z"], -secondArg);
+		secondHand.quaternion.multiply(q);
+		secondHand.position.set(Math.cos(-secondArg+Math.PI/2), Math.sin(-secondArg+Math.PI/2), 0.0);
+
 		// 針は、時計回りなので、角度を逆にする.
-		secondHand.rotation.set(0,0,-secondArg);
+		// secondHand.rotation.set(0,0,-secondArg);
 		scene.add( secondHand );
 
 		circleGeometry = new THREE.CircleGeometry( 2, 32 );
@@ -182,7 +194,13 @@
 
 			shortHand.rotation.set(0,0,-hourArg);
 			bigHand.rotation.set(0,0,-minuteArg);
-			secondHand.rotation.set(0,0,-secondArg);
+
+			// secondHand.position.set(0.0, 0.0, 0.0);
+			q.setFromAxisAngle(Axis["z"], -secondArg);
+			// secondHand.quaternion.multiply(q);
+			// secondHand.position.set(Math.cos(-secondArg+Math.PI/2), Math.sin(-secondArg-Math.PI/2), 0.0);
+			// secondHand.position.set(Math.cos(-secondArg), Math.sin(-secondArg), 0.0);
+			// secondHand.position.set(0.0, 1.0, 0.0);
 
 			/* レンダラにシーンとカメラを渡して描画させる*/
 			renderer.render(scene, camera);
