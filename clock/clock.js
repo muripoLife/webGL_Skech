@@ -125,7 +125,9 @@
 		secondHand         = new THREE.Mesh( secondHandGeometry, secondHandMaterial );
 
 		// console.log(secondHand);
+		// console.log(secondArg);
 
+		console.log("q_bf"+q);
 		q.setFromAxisAngle(Axis["z"], -secondArg);
 		secondHand.quaternion.multiply(q);
 		secondHand.position.set(Math.cos(-secondArg+Math.PI/2), Math.sin(-secondArg+Math.PI/2), 0.0);
@@ -178,7 +180,12 @@
 
 		/* レンダリングループを定義 */
 		let count = 0;
-		render();
+		const clock = new THREE.Clock();
+		// render();
+
+		setInterval(render, 1000);
+
+
 		function render(){
 
 			current_time = new Date();
@@ -187,24 +194,34 @@
 			second       = current_time.getSeconds();
 			// console.log(hour+"h",+minute+"m"+second+"s");
 
+			const delta = clock.getDelta();
+
 			// 時刻角度計算
 			hourArg   = (hour%12)*(Math.PI/6);
 			minuteArg = minute *(Math.PI/30);
+
+
+			deltaSecondArg = delta *(Math.PI/30);
 			secondArg = second *(Math.PI/30);
+			// console.log(secondArg);
 
 			shortHand.rotation.set(0,0,-hourArg);
 			bigHand.rotation.set(0,0,-minuteArg);
 
 			// secondHand.position.set(0.0, 0.0, 0.0);
-			q.setFromAxisAngle(Axis["z"], -secondArg);
-			// secondHand.quaternion.multiply(q);
-			// secondHand.position.set(Math.cos(-secondArg+Math.PI/2), Math.sin(-secondArg-Math.PI/2), 0.0);
+			q.setFromAxisAngle(Axis["z"], -deltaSecondArg);
+			// q.setFromAxisAngle(Axis["z"], -secondArg);
+
+			// console.log(secondArg);
+			secondHand.quaternion.multiply(q);
+			console.log("q_bf"+q);
+			secondHand.position.set(Math.cos(-secondArg+Math.PI/2), Math.sin(-secondArg+Math.PI/2), 0.0);
 			// secondHand.position.set(Math.cos(-secondArg), Math.sin(-secondArg), 0.0);
 			// secondHand.position.set(0.0, 1.0, 0.0);
 
 			/* レンダラにシーンとカメラを渡して描画させる*/
 			renderer.render(scene, camera);
-			if(run){requestAnimationFrame(render);}
+			// if(run){requestAnimationFrame(render);}
 		}
 		renderer.render(scene, camera);
 	}, false);
