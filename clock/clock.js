@@ -92,7 +92,7 @@
 		var hourArg   = (hour%12)*(Math.PI/6);
 		var minuteArg = minute *(Math.PI/30);
 		var secondArg = second *(Math.PI/30);
-		console.log(hourArg);
+		// console.log(hourArg);
 
 		shortHandGeometry = new THREE.BoxGeometry(0.13, 1.0, 0.1);
 		shortHandMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
@@ -125,10 +125,37 @@
 		circleGeometry = new THREE.CircleGeometry( 2, 32 );
 		circleMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
 		circle         = new THREE.Mesh( circleGeometry, circleMaterial );
-		circle.position.x = 0.0;
-		circle.position.y = 0.0;
-		circle.position.z = -0.1;
+		circle.position.set(0.0, 0.0, -0.1);
 		scene.add( circle );
+
+		var loader = new THREE.FontLoader();
+		loader.load( 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+			var textGeo = [];
+			var mesh    = [];
+			var textMaterial = new THREE.MeshPhongMaterial( { color: 0xff00ff, specular: 0xffffff } );
+			for(var i = 0; i < 12; i++){
+				textGeo.push(new THREE.TextGeometry( i+1, {
+					font: font,
+					size: 11,
+					height: 5, // how much extrusion (how thick / deep are the letters)
+					curveSegments: 6,
+					bevelThickness: 1,
+					bevelSize: 0.5,
+					bevelEnabled: true
+				}));
+				textGeo[i].computeBoundingBox();
+				mesh.push(new THREE.Mesh( textGeo[i], textMaterial));
+				mesh[i].scale.set(0.05, 0.05, 0.05);
+				mesh[i].position.set(-0.2+2.0*Math.sin(Math.PI/6*(i+1)), -0.2+2.0*Math.cos(Math.PI/6*(i+1)), -0.1);
+				mesh[i].castShadow = true;
+				mesh[i].receiveShadow = true;
+				scene.add( mesh[i]);
+				// var box = new THREE.BoxHelper( mesh[i] );
+				// scene.add( box );
+			}
+
+		});
 
 		/* ライトオブジェクトを生成してシーンに追加する */
 		// 光の色を0xffffffを白にしている.
