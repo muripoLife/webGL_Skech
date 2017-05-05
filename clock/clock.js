@@ -8,7 +8,8 @@
 	window.addEventListener('load', () => {
 		// 汎用変数の宣言
 		let run       = true;                // Esc キーで動作を止めることができるようにフラグを設定
-		let width     = window.innerWidth / 2;   // ブラウザのクライアント領域の幅
+		// let width     = window.innerWidth / 2;   // ブラウザのクライアント領域の幅
+		let width     = window.innerWidth;   // ブラウザのクライアント領域の幅
 		let height    = window.innerHeight;  // ブラウザのクライアント領域の高さ
 		let targetDOM = document.getElementById('webgl'); // スクリーンとして使う DOM
 		// three.js 定義されているオブジェクトに関連した変数を宣言
