@@ -8,13 +8,12 @@
 	window.addEventListener('load', () => {
 		// 汎用変数の宣言
 		let run       = true;                // Esc キーで動作を止めることができるようにフラグを設定
-		let width     = window.innerWidth;   // ブラウザのクライアント領域の幅
+		let width     = window.innerWidth / 2;   // ブラウザのクライアント領域の幅
 		let height    = window.innerHeight;  // ブラウザのクライアント領域の高さ
 		let targetDOM = document.getElementById('webgl'); // スクリーンとして使う DOM
 		// three.js 定義されているオブジェクトに関連した変数を宣言
 		let scene;
 		let camera;
-		// let controls;
 		let renderer;
 		let directional;
 		let ambient;
@@ -54,14 +53,6 @@
 				specular: 0xffffff
 		};
 
-		// Quaternion
-		var Axis = {
-			"x" : new THREE.Vector3(1, 0, 0).normalize(),
-			"y" : new THREE.Vector3(0, 1, 0).normalize(),
-			"z" : new THREE.Vector3(0, 0, 1).normalize()
-		};
-		var q = new THREE.Quaternion();
-
 		/*
 		THREE.jsの実装のテンプレート
 		*/
@@ -74,6 +65,9 @@
 			CAMERA_PARAMETER.near,
 			CAMERA_PARAMETER.far
 		);
+		// camera = new THREE.PerspectiveCamera(
+		// 	50, window.innerWidth / window.innerHeight, 0.1, 1000);
+
 		camera.position.x = CAMERA_PARAMETER.x;
 		camera.position.y = CAMERA_PARAMETER.y;
 		camera.position.z = CAMERA_PARAMETER.z;
@@ -105,7 +99,6 @@
 		shortHandMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
 		shortHand         = new THREE.Mesh( shortHandGeometry, shortHandMaterial );
 		shortHand.position.set(0.0, 0.0, 0.0);
-
 		// 針は、時計回りなので、角度を逆にする.
 		shortHand.rotation.set(0,0,-hourArg);
 		scene.add( shortHand );
@@ -120,20 +113,14 @@
 		bigHand.rotation.set(0,0,-minuteArg);
 		scene.add( bigHand );
 
-		secondHandGeometry = new THREE.BoxGeometry(0.1, 2.0, 0.1);
+		secondHandGeometry = new THREE.BoxGeometry(0.1, 3.0, 0.1);
 		secondHandMaterial = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
 		secondHand         = new THREE.Mesh( secondHandGeometry, secondHandMaterial );
-
-		// console.log(secondHand);
-		// console.log(secondArg);
-
-		console.log("q_bf"+q);
-		q.setFromAxisAngle(Axis["z"], -secondArg);
-		secondHand.quaternion.multiply(q);
-		secondHand.position.set(Math.cos(-secondArg+Math.PI/2), Math.sin(-secondArg+Math.PI/2), 0.0);
-
+		secondHand.position.x = 0.0;
+		secondHand.position.y = 0.0;
+		secondHand.position.z = 0.0;
 		// 針は、時計回りなので、角度を逆にする.
-		// secondHand.rotation.set(0,0,-secondArg);
+		secondHand.rotation.set(0,0,-secondArg);
 		scene.add( secondHand );
 
 		circleGeometry = new THREE.CircleGeometry( 2, 32 );
@@ -180,12 +167,7 @@
 
 		/* レンダリングループを定義 */
 		let count = 0;
-		const clock = new THREE.Clock();
-		// render();
-
-		setInterval(render, 1000);
-
-
+		render();
 		function render(){
 
 			current_time = new Date();
@@ -194,35 +176,22 @@
 			second       = current_time.getSeconds();
 			// console.log(hour+"h",+minute+"m"+second+"s");
 
-			const delta = clock.getDelta();
-
 			// 時刻角度計算
 			hourArg   = (hour%12)*(Math.PI/6);
 			minuteArg = minute *(Math.PI/30);
-
-
-			deltaSecondArg = delta *(Math.PI/30);
 			secondArg = second *(Math.PI/30);
-			// console.log(secondArg);
 
 			shortHand.rotation.set(0,0,-hourArg);
 			bigHand.rotation.set(0,0,-minuteArg);
-
-			// secondHand.position.set(0.0, 0.0, 0.0);
-			q.setFromAxisAngle(Axis["z"], -deltaSecondArg);
-			// q.setFromAxisAngle(Axis["z"], -secondArg);
-
-			// console.log(secondArg);
-			secondHand.quaternion.multiply(q);
-			console.log("q_bf"+q);
-			secondHand.position.set(Math.cos(-secondArg+Math.PI/2), Math.sin(-secondArg+Math.PI/2), 0.0);
-			// secondHand.position.set(Math.cos(-secondArg), Math.sin(-secondArg), 0.0);
-			// secondHand.position.set(0.0, 1.0, 0.0);
+			secondHand.rotation.set(0,0,-secondArg);
 
 			/* レンダラにシーンとカメラを渡して描画させる*/
 			renderer.render(scene, camera);
-			// if(run){requestAnimationFrame(render);}
+			if(run){
+				requestAnimationFrame(render);
+				renderer.render(scene, camera);
+			}
 		}
-		renderer.render(scene, camera);
+		// renderer.render(scene, camera);
 	}, false);
 })();
