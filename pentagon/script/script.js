@@ -19,7 +19,7 @@
 		let prg = gl3.program.create(
 			'vs',
 			'fs',
-			['position', 'color', 'time'],
+			['position', 'color'],
 			[3, 4],
 			['globalColor'],
 			['4fv']
@@ -102,7 +102,12 @@
 				// uniform 変数をシェーダにプッシュ
 				prg.push_shader([[1.0, 1.0, 1.0, 1.0]]);
 				// ドローコール（描画命令）
-				gl3.draw_arrays(gl3.gl.TRIANGLES, 3);
+			// gl3.draw_arrays(gl3.gl.TRIANGLES, 3);
+			// gl3.draw_arrays(gl3.gl.POINTS, 3);
+			// gl3.draw_arrays(gl3.gl.LINES, 3);
+			// gl3.draw_arrays(gl3.gl.LINE_STRIP, 3);
+			// gl3.draw_arrays(gl3.gl.TRIANGLES, 3);
+			gl3.draw_arrays(gl3.gl.TRIANGLE_STRIP, 3);
 			}
 		}
 	}, false);
