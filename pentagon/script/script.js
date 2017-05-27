@@ -19,7 +19,7 @@
 		let prg = gl3.program.create(
 			'vs',
 			'fs',
-			['position', 'color'],
+			['position', 'color', 'time'],
 			[3, 4],
 			['globalColor'],
 			['4fv']
@@ -95,6 +95,7 @@
 			gl3.scene_clear([0.7, 0.7, 0.7, 1.0]);
 			// プログラムをセット
 			prg.set_program();
+
 			// プログラムに頂点バッファをアタッチ
 			for(var i = 0; i < VBO_list.length; i++){
 				prg.set_attribute(VBO_list[i]);

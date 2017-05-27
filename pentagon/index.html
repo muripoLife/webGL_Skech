@@ -9,9 +9,22 @@
 	uniform vec4 globalColor;
 	varying vec4 vColor;
 	void main(){
+
 		// varying には頂点カラーとグローバルカラーを乗算した結果を格納
 		vColor      = color * globalColor;
 		gl_Position = vec4(position, 1.0);
+
+		// 回転処理
+		vec3 after_position;
+		float pi = 3.14;
+		after_position = mat3(
+			cos(pi/3.0), -sin(pi/3.0), 0.0,
+			sin(pi/3.0), cos(pi/3.0), 0.0,
+			0.0, 0.0, 1.0
+			)* position;
+		// after_position = vec3(position.x*cos(pi/3.0)-position.y*sin(pi/3.0), position.x*sin(pi/3.0)+position.y*cos(pi/3.0), position.z);
+
+		gl_Position = vec4(after_position, 1.0);
 	}
 </script>
 
